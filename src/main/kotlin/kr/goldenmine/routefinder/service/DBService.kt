@@ -1,9 +1,9 @@
-package kr.goldenmine.routefinder
+package kr.goldenmine.routefinder.service
 
-import kr.goldenmine.routefinder.models.BusInfo
-import kr.goldenmine.routefinder.models.BusStopStationInfo
-import kr.goldenmine.routefinder.models.BusThroughInfo
-import kr.goldenmine.routefinder.models.getBusStopStationInfoByResultSet
+import kr.goldenmine.routefinder.model.BusInfo
+import kr.goldenmine.routefinder.model.BusStopStationInfo
+import kr.goldenmine.routefinder.model.BusThroughInfo
+import kr.goldenmine.routefinder.model.getBusStopStationInfoByResultSet
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

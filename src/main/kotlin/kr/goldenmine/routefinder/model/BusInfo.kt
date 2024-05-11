@@ -1,6 +1,5 @@
-package kr.goldenmine.routefinder.models
+package kr.goldenmine.routefinder.model
 
-import com.google.gson.annotations.SerializedName
 import jakarta.persistence.*
 
 /*

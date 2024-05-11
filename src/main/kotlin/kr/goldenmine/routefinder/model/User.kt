@@ -1,10 +1,7 @@
-package kr.goldenmine.routefinder.models
+package kr.goldenmine.routefinder.model
 
-import com.google.gson.annotations.SerializedName
 import jakarta.persistence.Column
-import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.Table
 
 class User(
     @Id
