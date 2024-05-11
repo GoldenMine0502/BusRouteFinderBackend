@@ -32,7 +32,8 @@ class BusStopStationInfo(
     @Column(name = "admin_name")
     val adminName: String,
 ) {
-
+    var posXWGS84: Double? = null
+    var posYWGS84: Double? = null
 }
 
 fun getBusStopStationInfoByResultSet(res: ResultSet): BusStopStationInfo {

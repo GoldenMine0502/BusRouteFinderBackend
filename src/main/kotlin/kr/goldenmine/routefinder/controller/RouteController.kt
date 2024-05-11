@@ -1,7 +1,6 @@
 package kr.goldenmine.routefinder.controller
 
 import jakarta.servlet.http.HttpServletRequest
-import kr.goldenmine.routefinder.model.User
 import kr.goldenmine.routefinder.service.BusRouteService
 import kr.goldenmine.routefinder.service.DijkstraAlgorithm
 import kr.goldenmine.routefinder.request.DijkstraNodeDTO
@@ -47,9 +46,12 @@ class RouteController(
             )
                 .map {
                     val station = dijkstraAlgorithm.stationsMap[it.index]!!
-                    val busInfo = if (it.busId != null) busRouteService.getBusInfoById(it.busId) else null
+                    val busName = if(it.busId == "도보") "도보"
+                    else if (it.busId != null) busRouteService.getBusInfoById(it.busId)?.routeNo
+                    else null
 
-                    DijkstraNodeDTO(station.posX, station.posY, station.name, busInfo?.routeNo)
+
+                    DijkstraNodeDTO(station.posX, station.posY, station.name, station.shortId, busName)
                 }.toList()
         )
     }

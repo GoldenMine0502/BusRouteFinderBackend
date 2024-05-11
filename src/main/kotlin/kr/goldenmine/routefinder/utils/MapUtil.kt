@@ -33,6 +33,17 @@ fun distance(
     return sqrt(distance)
 }
 
+fun distance(
+    start: Point,
+    finish: Point,
+): Double {
+    return distance(
+        start.y, finish.y,
+        start.x, finish.x,
+        0.0, 0.0
+    )
+}
+
 fun distanceTM127(startTM127: Point, finishTM127: Point, el: Point = Point(0.0, 0.0)): Double {
     val start = convertTM127toWGS84(startTM127)
     val finish = convertTM127toWGS84(finishTM127)
