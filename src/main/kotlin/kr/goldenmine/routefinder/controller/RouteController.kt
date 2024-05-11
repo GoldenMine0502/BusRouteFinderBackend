@@ -1,6 +1,6 @@
 package kr.goldenmine.routefinder.controller
 
-import kr.goldenmine.routefinder.service.DBService
+import kr.goldenmine.routefinder.service.BusRouteService
 import kr.goldenmine.routefinder.service.DijkstraAlgorithm
 import kr.goldenmine.routefinder.request.DijkstraNodeDTO
 import kr.goldenmine.routefinder.request.RouteFindRequest
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/route")
 class RouteController(
-    val dbService: DBService,
+    val busRouteService: BusRouteService,
     val dijkstraAlgorithm: DijkstraAlgorithm,
 ) {
     @GetMapping("/find")
     fun getBusRoute(routeFindRequest: RouteFindRequest): RouteFindResponse {
-        val start = dbService.getStationByShortId(routeFindRequest.startShortId)
-        val end = dbService.getStationByShortId(routeFindRequest.endShortId)
+        val start = busRouteService.getStationByShortId(routeFindRequest.startShortId)
+        val end = busRouteService.getStationByShortId(routeFindRequest.endShortId)
 
         if (start == null || end == null) {
             throw BadRequestException("id is not matched")
@@ -32,7 +32,7 @@ class RouteController(
             )
                 .map {
                     val station = dijkstraAlgorithm.stationsMap[it.index]!!
-                    val busInfo = if (it.busId != null) dbService.getBusInfoById(it.busId) else null
+                    val busInfo = if (it.busId != null) busRouteService.getBusInfoById(it.busId) else null
 
                     DijkstraNodeDTO(station.posX, station.posY, station.name, busInfo?.routeNo)
                 }.toList()

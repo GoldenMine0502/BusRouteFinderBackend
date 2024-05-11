@@ -4,33 +4,20 @@ import kr.goldenmine.routefinder.model.BusInfo
 import kr.goldenmine.routefinder.model.BusStopStationInfo
 import kr.goldenmine.routefinder.model.BusThroughInfo
 import kr.goldenmine.routefinder.model.getBusStopStationInfoByResultSet
+import kr.goldenmine.routefinder.utils.GlobalConnection.Companion.connection
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.sql.Connection
-import java.sql.DriverManager
 
 @Service
-class DBService {
-    private val logger: Logger = LoggerFactory.getLogger(DBService::class.java)
+class BusRouteService {
+    private val logger: Logger = LoggerFactory.getLogger(BusRouteService::class.java)
 
-    private val con: Connection
-
-    init {
-        Class.forName("com.mysql.cj.jdbc.Driver")
-
-        val url =
-            "jdbc:mysql://localhost:3306/bus_improvement?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true"
-        val user = "dev"
-        val password = "qqwwee11@@"
-
-        con = DriverManager.getConnection(url, user, password)
-    }
 
     fun getShortIdByStationName(stationName: String): String? {
         val sql = "SELECT short_id FROM bus_stop_station_info AS sta WHERE sta.name = ?"
 
-        val shortId = con.prepareStatement(sql).use {
+        val shortId = connection.prepareStatement(sql).use {
             it.setString(1, stationName)
 
             val rs = it.executeQuery()
@@ -48,7 +35,7 @@ class DBService {
     fun getAllStations(): List<BusStopStationInfo> {
         val sql = "SELECT * FROM bus_stop_station_info;"
 
-        val rs = con.prepareStatement(sql).executeQuery()
+        val rs = connection.prepareStatement(sql).executeQuery()
 
         val list = ArrayList<BusStopStationInfo>()
         while (rs.next()) {
@@ -62,7 +49,7 @@ class DBService {
     fun getAllBusThroughInfo(): List<BusThroughInfo> {
         val sql = "SELECT * FROM bus_through_info;"
 
-        val res = con.prepareStatement(sql).executeQuery()
+        val res = connection.prepareStatement(sql).executeQuery()
 
         val list = ArrayList<BusThroughInfo>()
         while (res.next()) {
@@ -81,7 +68,7 @@ class DBService {
     fun getStationByShortId(id: Int): BusStopStationInfo? {
         val sql = "SELECT * FROM bus_stop_station_info WHERE bus_stop_station_info.short_id = ?;"
 
-        return con.prepareStatement(sql).use {
+        return connection.prepareStatement(sql).use {
             it.setInt(1, id)
 
             val rs = it.executeQuery()
@@ -97,7 +84,7 @@ class DBService {
     fun getStationById(id: Int): BusStopStationInfo? {
         val sql = "SELECT * FROM bus_stop_station_info WHERE id = ?;"
 
-        return con.prepareStatement(sql).use {
+        return connection.prepareStatement(sql).use {
             it.setInt(1, id)
 
             val rs = it.executeQuery()
@@ -113,7 +100,7 @@ class DBService {
     fun getAllThroughsWithStation(): List<Pair<BusStopStationInfo, BusThroughInfo>> {
         val sql = "SELECT * FROM bus_through_info INNER JOIN bus_stop_station_info ON bus_through_info.bus_stop_station_id = bus_stop_station_info.id;"
 
-        val rs = con.prepareStatement(sql).executeQuery()
+        val rs = connection.prepareStatement(sql).executeQuery()
 
         val list = ArrayList<Pair<BusStopStationInfo, BusThroughInfo>>()
         while (rs.next()) {
@@ -142,7 +129,7 @@ class DBService {
     fun getBusInfoById(routeId: String): BusInfo? {
         val sql = "SELECT * FROM bus_info WHERE route_id = ?;"
 
-        val res = con.prepareStatement(sql).use {
+        val res = connection.prepareStatement(sql).use {
             it.setString(1, routeId)
             val rs = it.executeQuery()
             if(rs.next()) {

@@ -11,13 +11,13 @@ import kotlin.collections.ArrayList
 
 @Service
 class DijkstraAlgorithm(
-    private final val dbService: DBService,
+    private final val busRouteService: BusRouteService,
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(DijkstraAlgorithm::class.java)
 
-    private final val stations = dbService.getAllStations()
-    private final val throughs = dbService.getAllBusThroughInfo()
+    private final val stations = busRouteService.getAllStations()
+    private final val throughs = busRouteService.getAllBusThroughInfo()
 
     // station 1에서 station 2로 갈 때 드는 거리 목록
 //    private final var adjointMatrix: Array<DoubleArray> = Array(stations.size) { DoubleArray(stations.size) { -1.0 } }
@@ -54,7 +54,7 @@ class DijkstraAlgorithm(
             nodes.add(ArrayList())
         }
 
-        val throughsWithStation = dbService.getAllThroughsWithStation()
+        val throughsWithStation = busRouteService.getAllThroughsWithStation()
 
         for(idx in 0 until throughs.size - 1) {
             val start = throughsWithStation[idx]
