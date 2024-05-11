@@ -101,6 +101,7 @@ class DijkstraAlgorithm(
             for (i in nexts.indices) {
                 val next = nexts[i]
 
+                // 버스 환승시 1km을 더 간것으로 평가한다. -> 다음 노드까지 경로 + 1km 추가
                 var otherBusCost = 1000
                 if(current.busId == null) otherBusCost = 0
                 if(current.busId == next.busId) otherBusCost = 0
