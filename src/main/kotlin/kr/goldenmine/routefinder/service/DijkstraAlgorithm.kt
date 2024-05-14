@@ -81,7 +81,7 @@ class DijkstraAlgorithm(
                 val distance = distance(
                     Point(stationStart.posXWGS84!!, stationStart.posYWGS84!!),
                     Point(stationFinish.posXWGS84!!, stationFinish.posYWGS84!!),
-                ) * 4
+                ) * 4 * 1.75
 //                val distance = distanceTM127(
 //                    Point(stationStart.posX, stationStart.posY),
 //                    Point(stationFinish.posX, stationFinish.posY)

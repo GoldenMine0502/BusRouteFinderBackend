@@ -1,5 +1,6 @@
 package kr.goldenmine.routefinder.service
 
+import kr.goldenmine.routefinder.model.BusStopStationInfo
 import kr.goldenmine.routefinder.model.SearchLog
 import kr.goldenmine.routefinder.model.User
 import kr.goldenmine.routefinder.utils.GlobalConnection.Companion.connection
@@ -7,13 +8,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class LogService {
-    fun writeLog(user: User, from: String, to: String) {
-        val sql = "INSERT INTO search_log VALUES (?, ?, ?, ?)"
+    fun writeLog(user: User, from: String, fromId: Int, to: String, toId: Int) {
+        val sql = "INSERT INTO search_log VALUES (?, ?, ?, ?, ?, ?)"
         connection.prepareStatement(sql).use {
             it.setInt(1, 0)
             it.setString(2, from)
-            it.setString(3, to)
-            it.setInt(4, user.id)
+            it.setInt(3, fromId)
+            it.setString(4, to)
+            it.setInt(5, toId)
+            it.setInt(6, user.id)
 
             it.executeUpdate()
         }
@@ -32,7 +35,9 @@ class LogService {
                 val searchLog = SearchLog(
                     rs.getInt("id"),
                     rs.getString("start"),
+                    rs.getInt("start_id"),
                     rs.getString("end"),
+                    rs.getInt("end_id"),
                     rs.getInt("user_id"),
                 )
 
@@ -51,12 +56,10 @@ class LogService {
         }
     }
 
-    fun getLogAdmin(user: User): List<SearchLog> {
+    fun getLogAdmin(): List<SearchLog> {
         val sql = "SELECT * FROM search_log"
 
         return connection.prepareStatement(sql).use {
-            it.setInt(1, user.id)
-
             val rs = it.executeQuery()
 
             val logs = mutableListOf<SearchLog>()
@@ -65,7 +68,9 @@ class LogService {
                 val searchLog = SearchLog(
                     rs.getInt("id"),
                     rs.getString("start"),
+                    rs.getInt("start_id"),
                     rs.getString("end"),
+                    rs.getInt("end_id"),
                     rs.getInt("user_id"),
                 )
 

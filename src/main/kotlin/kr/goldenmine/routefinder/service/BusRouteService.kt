@@ -155,4 +155,29 @@ class BusRouteService {
 
         return res
     }
+
+
+    fun searchStation(keyword: String): List<BusStopStationInfo> {
+        val sql = "SELECT * FROM bus_stop_station_info WHERE name LIKE ? LIMIT 10"
+
+        val list = mutableListOf<BusStopStationInfo>()
+
+        connection.prepareStatement(sql).use {
+            it.setString(1, "%${keyword}%")
+
+            val rs = it.executeQuery()
+            while(rs.next()) {
+                list.add(BusStopStationInfo(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getDouble("pos_x"),
+                    rs.getDouble("pos_y"),
+                    rs.getInt("short_id"),
+                    rs.getString("admin_name"),
+                ))
+            }
+        }
+
+        return list
+    }
 }

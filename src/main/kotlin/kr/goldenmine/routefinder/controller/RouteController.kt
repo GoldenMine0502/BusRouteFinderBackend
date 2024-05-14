@@ -36,7 +36,7 @@ class RouteController(
 
         // 검색 기록 로깅
         if(user != null) {
-            logService.writeLog(user, start.name, end.name)
+            logService.writeLog(user, start.name, start.shortId, end.name, end.shortId)
         }
 
         return RouteFindResponse(

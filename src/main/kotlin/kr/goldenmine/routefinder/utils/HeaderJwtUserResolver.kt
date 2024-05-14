@@ -34,6 +34,7 @@ class HeaderJwtUserResolver(
         binderFactory: WebDataBinderFactory?
     ): User? {
         val header = webRequest.getHeader("Authorization")
+        logger.info("Authorization header: $header")
 
         if(header != null) {
             try {
