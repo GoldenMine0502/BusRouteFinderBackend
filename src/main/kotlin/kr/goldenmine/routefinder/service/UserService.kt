@@ -2,8 +2,10 @@ package kr.goldenmine.routefinder.service
 
 import kr.goldenmine.dowayobackend.util.impl.ConflictException
 import kr.goldenmine.routefinder.DefaultPasswordEncoder
+import kr.goldenmine.routefinder.model.BusStopStationInfo
 import kr.goldenmine.routefinder.model.User
 import kr.goldenmine.routefinder.model.getUserFromResultSet
+import kr.goldenmine.routefinder.request.UserRequest
 import kr.goldenmine.routefinder.utils.GlobalConnection.Companion.connection
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -85,7 +87,63 @@ class UserService(
         insertUser(user)
     }
 
+    fun getUsers(): List<User> {
+        val sql = "SELECT * FROM user"
+
+        return connection.prepareStatement(sql).use {
+            val rs = it.executeQuery()
+
+            val list = ArrayList<User>()
+            while (rs.next()) {
+                list.add(getUserFromResultSet(rs))
+            }
+
+            list
+        }
+    }
+
+    fun editUser(user: UserRequest) {
+        val sql = "UPDATE user SET account_id = ?, password = ?, nickname = ?, is_admin = ? WHERE id = ?;"
+
+        user.password = passwordEncoder.encode(user.password)
+
+        connection.prepareStatement(sql).use {
+            it.setString(1, user.accountId)
+            it.setString(2, user.password)
+            it.setString(3, user.nickname)
+            it.setBoolean(4, user.isAdmin)
+            it.setInt(5, user.id)
+
+            it.executeUpdate()
+        }
+    }
+
+    fun deleteUser(id: Int) {
+        val sql = "DELETE FROM user WHERE id = ?;"
+
+        connection.prepareStatement(sql).use {
+            it.setInt(1, id)
+            it.executeUpdate()
+        }
+    }
+
     fun insertUser(user: User) {
+        val sql = "INSERT INTO user VALUES (?, ?, ?, ?, ?)"
+        connection.prepareStatement(sql).use {
+            it.setInt(1, user.id)
+            it.setString(2, user.accountId)
+            it.setString(3, user.password)
+            it.setString(4, user.nickname)
+            it.setBoolean(5, user.isAdmin)
+
+            it.executeUpdate()
+        }
+    }
+
+
+    fun addUser(user: UserRequest) {
+        user.password = passwordEncoder.encode(user.password)
+
         val sql = "INSERT INTO user VALUES (?, ?, ?, ?, ?)"
         connection.prepareStatement(sql).use {
             it.setInt(1, user.id)

@@ -1,17 +1,20 @@
 package kr.goldenmine.routefinder.controller
 
 import jakarta.servlet.http.HttpServletRequest
+import kr.goldenmine.routefinder.model.BusInfo
+import kr.goldenmine.routefinder.model.BusStopStationInfo
+import kr.goldenmine.routefinder.model.BusThroughInfo
+import kr.goldenmine.routefinder.model.User
+import kr.goldenmine.routefinder.request.*
 import kr.goldenmine.routefinder.service.BusRouteService
 import kr.goldenmine.routefinder.service.DijkstraAlgorithm
-import kr.goldenmine.routefinder.request.DijkstraNodeDTO
-import kr.goldenmine.routefinder.request.RouteFindRequest
-import kr.goldenmine.routefinder.request.RouteFindResponse
 import kr.goldenmine.routefinder.service.LogService
 import kr.goldenmine.routefinder.service.UserService
 import org.apache.coyote.BadRequestException
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/route")
@@ -54,5 +57,97 @@ class RouteController(
                     DijkstraNodeDTO(station.posX, station.posY, station.name, station.shortId, busName)
                 }.toList()
         )
+    }
+
+    @GetMapping("/route")
+    fun getBusRoute(request: RequestBusRoute): RouteFindResponse {
+        return RouteFindResponse(
+            busRouteService.getBusRoutesByRouteNo(request.routeNo).map {
+                DijkstraNodeDTO(it.first.posX, it.first.posY, it.first.name, it.first.shortId, request.routeNo)
+            }
+        )
+    }
+
+    @GetMapping("/station")
+    fun getStation(request: RequestBusStation): ResponseEntity<BusStopStationInfo?> {
+        val res = busRouteService.getStationByShortId(request.shortId)
+            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+
+        return ResponseEntity.ok(res)
+    }
+
+    @GetMapping("/update")
+    fun update(user: User) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        dijkstraAlgorithm.initialize()
+    }
+
+    @GetMapping("/bus")
+    fun getAllBus(): List<BusInfo> {
+        return busRouteService.getAllBus()
+    }
+
+    @PutMapping("/bus")
+    fun addBus(user: User, @RequestBody busInfo: BusInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.addBus(busInfo)
+    }
+
+    @PatchMapping("/bus")
+    fun editBus(user: User, @RequestBody busInfo: BusInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.editBus(busInfo)
+    }
+
+    @DeleteMapping("/bus")
+    fun deleteBus(user: User, @RequestBody busInfo: RequestDeleteById) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.deleteBus(busInfo.id)
+    }
+
+    @GetMapping("/busthrough")
+    fun getAllBusThrough(): List<BusThroughInfo> {
+        return busRouteService.getAllBusThroughInfo()
+    }
+
+    @PutMapping("/busthrough")
+    fun addBusThrough(user: User, @RequestBody busInfo: BusThroughInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.addBusThrough(busInfo)
+    }
+
+    @PatchMapping("/busthrough")
+    fun editBusThrough(user: User, @RequestBody busInfo: BusThroughInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.editBusThrough(busInfo)
+    }
+
+    @DeleteMapping("/busthrough")
+    fun deleteBusThrough(user: User, @RequestBody busInfo: RequestDeleteById) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.deleteBusThrough(busInfo.id)
+    }
+
+    @GetMapping("/busstation")
+    fun getAllStations(): List<BusStopStationInfo> {
+        return busRouteService.getAllStations()
+    }
+
+    @PutMapping("/busstation")
+    fun addStation(user: User, @RequestBody busInfo: BusStopStationInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.addStation(busInfo)
+    }
+
+    @PatchMapping("/busstation")
+    fun editStation(user: User, @RequestBody busInfo: BusStopStationInfo) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.editStation(busInfo)
+    }
+
+    @DeleteMapping("/busstation")
+    fun deleteStation(user: User, @RequestBody busInfo: RequestDeleteById) {
+        if(!user.isAdmin) throw BadCredentialsException("you have no permission")
+        return busRouteService.deleteStation(busInfo.id)
     }
 }

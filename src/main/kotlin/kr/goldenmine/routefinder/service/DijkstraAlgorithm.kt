@@ -1,6 +1,7 @@
 package kr.goldenmine.routefinder.service
 
 import kr.goldenmine.routefinder.model.BusStopStationInfo
+import kr.goldenmine.routefinder.model.BusThroughInfo
 import kr.goldenmine.routefinder.utils.Point
 import kr.goldenmine.routefinder.utils.convertTM127toWGS84
 import kr.goldenmine.routefinder.utils.distance
@@ -18,17 +19,29 @@ class DijkstraAlgorithm(
 
     private val log: Logger = LoggerFactory.getLogger(DijkstraAlgorithm::class.java)
 
-    private final val stations = busRouteService.getAllStations()
-    private final val throughs = busRouteService.getAllBusThroughInfo()
+    private final var stations = listOf<BusStopStationInfo>()
+    private final var throughs = listOf<BusThroughInfo>()
 
     // station 1에서 station 2로 갈 때 드는 거리 목록
 //    private final var adjointMatrix: Array<DoubleArray> = Array(stations.size) { DoubleArray(stations.size) { -1.0 } }
-    private final val nodes = ArrayList<ArrayList<Node>>()
+    private final var nodes = ArrayList<ArrayList<Node>>()
 
-    final val stationsMap = HashMap<Int, BusStopStationInfo>()
-    final val stationIdToIndex = HashMap<Int, Int>()
+    final var stationsMap = HashMap<Int, BusStopStationInfo>()
+    final var stationIdToIndex = HashMap<Int, Int>()
 
     init {
+        initialize()
+    }
+
+    final fun initialize() {
+        stations = busRouteService.getAllStations()
+        throughs = busRouteService.getAllBusThroughInfo()
+
+        nodes = ArrayList()
+
+        stationsMap = HashMap<Int, BusStopStationInfo>()
+        stationIdToIndex = HashMap<Int, Int>()
+
         for(idx in stations.indices) {
             val station = stations[idx]
 

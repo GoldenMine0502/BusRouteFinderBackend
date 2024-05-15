@@ -12,8 +12,8 @@ class GlobalConnection {
 
             val url =
                 "jdbc:mysql://localhost:3306/bus_improvement?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true"
-            val user = "dev"
-            val password = "qqwwee11@@"
+            val user = "202200922user"
+            val password = "202200922pw"
 
             connection = DriverManager.getConnection(url, user, password)
         }

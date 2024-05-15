@@ -32,7 +32,10 @@ class BusStopStationInfo(
     @Column(name = "admin_name")
     val adminName: String,
 ) {
+    @Transient
     var posXWGS84: Double? = null
+
+    @Transient
     var posYWGS84: Double? = null
 }
 
