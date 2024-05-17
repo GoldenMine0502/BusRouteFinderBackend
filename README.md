@@ -1,5 +1,7 @@
 # BusRouteFinder(Backend)
 
+* 해당 프젝에 대한 설명은 프론트로 가주세요
+
 아 
 
 데베프젝
